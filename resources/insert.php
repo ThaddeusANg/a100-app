@@ -8,6 +8,7 @@ if(mysqli_connect_errno()){
 	echo "Failed to connect to MySQL: ".mysqli_connect_error();
 }
 
+/*
 $sqlFieldNames = "SELECT field_id, field_name, response_target FROM fields";
 $fieldNamesArray = mysqli_query($formCon, $sqlFieldNames);
 $respArray= array();
@@ -22,7 +23,7 @@ while($fieldNamesRows = mysqli_fetch_array($fieldNamesArray)){
 	//echo $x.": ".$respArray[$x][0]." ,".$respArray[$x][1]." ,".$respArray[$x][2]." ,".$respArray[$x][3]." from array</br>";
 	$x++;
 }
-
+*/
 
 //check for duplicates by applicant ID and cohort content
 $sqlDup = 
@@ -35,21 +36,47 @@ $dupCount = mysqli_num_rows($dup);  //counts total duplicate values
 if($dupCount >1){
 	echo "Someone has enrolled in: ".$_POST['cohort_id']." with the provided email address already, thank you for your interest.";
 }else{
- 	$reqArray = mysqli_query($formCon, "SELECT field_name, is_required FROM fields");
- 	$malformedInput=0;
- 	while($required = mysqli_fetch_array($reqArray))
- 		{
- 		$tempName = $required['field_name'];
- 		if($required['is_required']==1 && $_POST[$tempName]==NULL){
- 			echo "'".$tempName."' is a required field, you submitted: ".$_POST['$tempName']." please enter a correct value </br>";
- 			$malformedInput = 1;
- 			
- 			}
- 		}
- 		if($malformedInput==1){
-			echo "<a href='../index.php'>Click Back</a>";
- 			exit;
- 		}
+	//checks if user has submitted or saved the form, if submit switch flag to 1 to lock form else leave at 0
+			if($_POST['submit'])
+			{
+				$status = 1;
+
+			//checks for malformed input 
+			 	$reqArray = mysqli_query($formCon, "SELECT field_name, is_required FROM fields");
+			 	$malformedInput=0;
+			 	while($required = mysqli_fetch_array($reqArray))
+			 		{
+			 		$tempName = $required['field_name'];
+			 		if($required['is_required']==1 && $_POST[$tempName]==NULL){
+			 			echo "'".$tempName."' is a required field, you submitted: ".$_POST['$tempName']." please enter a correct value </br>";
+			 			$malformedInput = 1;
+			 			}
+			 		}
+			 		if($malformedInput==1){
+						echo "<a href='../index.php'>Click Back</a>";
+			 			exit;
+			 		}
+
+			}elseif($_POST['save'])
+			{
+				$status = 0;
+				$to=$email;
+				$subject="Thank you for your interest in Apprentice 100";
+				$Message="
+				<html>
+				<head>
+				<title>HTML email</title>
+				</head>
+				<body>
+				<p>Thank you for your continued interest in the Apprentice 100 program. </p>
+				<p> We look forward to receiving your completed application. For your reference, your login credentials to our online webportal are</p>
+				".$email."<br>
+				".$password."<br>
+				<p>We look forward to receiving your completed application</p>
+				<p>Sincerely \nA100 Developers</p>
+				</body>
+				</html>";
+			}
 
 	$applicationSqlInsert = "NULL";
 	//needs to be modularized to read from DB
@@ -156,30 +183,6 @@ if($dupCount >1){
 		}
 	}
 
-			if($_POST['submit'])
-			{
-				$status = 1;
-			}elseif($_POST['save'])
-			{
-				$status = 0;
-				$to=$email;
-				$subject="Thank you for your interest in Apprentice 100";
-				$Message="
-				<html>
-				<head>
-				<title>HTML email</title>
-				</head>
-				<body>
-				<p>Thank you for your continued interest in the Apprentice 100 program. </p>
-				<p> We look forward to receiving your completed application. For your reference, your login credentials to our online webportal are</p>
-				".$email."<br>
-				".$password."<br>
-				<p>We look forward to receiving your completed application</p>
-				<p>Sincerely \nA100 Developers</p>
-				</body>
-				</html>";
-			}
-
 	$applicationSqlInsert=$applicationSqlInsert.", '".$status."',NULL";
 	$submitSql = "INSERT INTO `applications_db`.`".$submitSqlTable."` (".$submitSqlField.")VALUES (".$applicationSqlInsert.")";
 	echo "final insert".$submitSql;
@@ -193,6 +196,7 @@ if($dupCount >1){
 mysqli_free_result($result);
 
 }
+
 
 
 

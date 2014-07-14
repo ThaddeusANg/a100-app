@@ -2,7 +2,8 @@
  <head><title>PHP Test</title></head>
  <body>
  <?php echo '<p>A100 Application Form</p>'; ?> 
-<form action="insert.php" method="post" enctype="multipart/form-data">
+<form action="replace.php" method="post" enctype="multipart/form-data">
+
 <?php
 	include "cred_int.php";
 
