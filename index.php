@@ -13,6 +13,9 @@
 		<!-- Signin stylesheet from http://getbootstrap.com/examples/signin/ -->
 		<link href="public_html/css/signin.css" rel="stylesheet">
 
+		<!-- Custom CSS for Application Form -->
+		<link href="public_html/css/form.css" rel="stylesheet">
+
 		<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
 		<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
 		<!--[if lt IE 9]>
@@ -27,24 +30,32 @@
 	</head>
 
 	<body>
+		<div class="container-fluid">
 
-		<div class="container form-signin">
+			<div class="row centered">
+				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 bottomMargin">
+					<h1>Apprentice Applications</h1>
+				</div>
+			</div>
 
-		    <div>
-		    	<p>
-		    		<h3><a href="resources/new_applicant.php">New applicant? Click here.</a></h3>
-		    	</p>
-		    </div>
+		    <div class="row centered form-signin">
+		    	<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 topMarginSmall bottomMargin">
+			    	<button class="btn btn-lg btn-primary btn-block" onClick="location.href='resources/new_applicant.php'">
+			    		New applicant? Click here.</button>
+			    </div>
+			</div>
 
-			<form action="resources/existing_applicant.php" method="post" class="form-signin" role="form">
-		        <h3 class="form-signin-heading">Returning Applicants</h3>
-		        <input type="email" class="form-control" placeholder="Email address" name="emailLogin" required autofocus>
-		        <input type="password" class="form-control" placeholder="Password" name="passwordLogin" required>
-		        <button class="btn btn-lg btn-primary btn-block" type="submit" name="login" value="login">
-		        	Resume Application</button>
-		    </form>
+			<div class="row centered form-signin">
 
+				<form action="resources/existing_applicant.php" method="post" class="form-signin" role="form">
+			        <h3 class="form-signin-heading">Returning Applicants</h3>
+			        <input type="email" class="form-control" placeholder="Email address" name="emailLogin" required autofocus>
+			        <input type="password" class="form-control" placeholder="Password" name="passwordLogin" required>
+			        <button class="btn btn-lg btn-primary btn-block" type="submit" name="login" value="login">
+			        	Resume application now.</button>
+			    </form>
 
+			</div>
 
 		</div>
 
