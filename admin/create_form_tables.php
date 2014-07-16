@@ -21,8 +21,8 @@ $sql = array(
 	section_id INT UNSIGNED NOT NULL REFERENCES sections(section_id),
 	inner_arrange TINYINT UNSIGNED NOT NULL,
 	options_target VARCHAR(30),
-	is_required BIT NOT NULL,
-	is_active BIT NOT NULL,
+	is_required BOOLEAN NOT NULL,
+	field_is_active BOOLEAN NOT NULL,
 	response_target VARCHAR(30) NOT NULL
 	)",
 	"CREATE TABLE IF NOT EXISTS sections(
@@ -30,7 +30,7 @@ $sql = array(
 	section_name VARCHAR(50) NOT NULL,
 	section_description TEXT,
 	arrange TINYINT UNSIGNED NOT NULL,
-	is_active BIT NOT NULL
+	section_is_active BOOLEAN NOT NULL
 	)",
 	"CREATE TABLE IF NOT EXISTS states(
 	state_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -39,13 +39,13 @@ $sql = array(
 	"CREATE TABLE IF NOT EXISTS schools(
 	school_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
 	name VARCHAR(50) NOT NULL,
-	is_active BIT NOT NULL
+	school_is_active BOOLEAN NOT NULL
 	)",
 	"CREATE TABLE IF NOT EXISTS cohorts(
 	cohort_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
 	name VARCHAR(50) NOT NULL,
 	cohort_decription TEXT,
-	is_active BIT NOT NULL
+	cohort_is_active BOOLEAN NOT NULL
 	)",
 	"CREATE TABLE IF NOT EXISTS question_options(
 	q_option_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -54,7 +54,7 @@ $sql = array(
 	option_description TEXT,
 	input_type VARCHAR(30),
 	arrange TINYINT UNSIGNED NOT NULL,
-	is_active BIT NOT NULL
+	option_is_active BOOLEAN NOT NULL
 	)"
 	);
 

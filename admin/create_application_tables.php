@@ -13,8 +13,8 @@ if(mysqli_connect_errno()){
 $sql = array(
 	"CREATE TABLE IF NOT EXISTS identity(
 	identity_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-	first_name VARCHAR(30) NOT NULL, 
-	last_name VARCHAR(30) NOT NULL,
+	first_name VARCHAR(30), 
+	last_name VARCHAR(30),
 	email VARCHAR(50) NOT NULL,
 	password VARCHAR(50) NOT NULL
 	)",
@@ -22,7 +22,7 @@ $sql = array(
 	application_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
 	applicant_id INT UNSIGNED NOT NULL REFERENCES applicants(applicant_id),
 	identity_id INT UNSIGNED NOT NULL REFERENCES identity(identity_id),
-	cohort_name varchar(150),
+	cohort_name varchar(150) NOT NULL,
 	referral_id INT UNSIGNED NOT NULL REFERENCES referrals(referral_id),
 	schedule_id INT UNSIGNED NOT NULL REFERENCES schedules(schedule_id),
 	experience_id INT UNSIGNED NOT NULL REFERENCES experiences(experience_id),
@@ -32,42 +32,42 @@ $sql = array(
 	)",
 	"CREATE TABLE IF NOT EXISTS applicants(
 	applicant_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-	school_id varchar(150),
+	school_id VARCHAR(150),
 	major VARCHAR(50),
 	graduation_date VARCHAR(30),
-	street_address VARCHAR(100) NOT NULL,
-	city VARCHAR(50) NOT NULL,
-	state VARCHAR(20) NOT NULL,
-	zipcode CHAR(10) NOT NULL,
-	phone_number VARCHAR(15) NOT NULL,
-	linkedin VARCHAR(50) NOT NULL,
-	portfolio VARCHAR (50) NOT NULL,
-	age_check BIT NOT NULL,
-	legal_status BIT NOT NULL
+	street_address VARCHAR(100),
+	city VARCHAR(50),
+	state VARCHAR(20),
+	zipcode CHAR(10),
+	phone_number VARCHAR(15),
+	linkedin VARCHAR(50),
+	portfolio VARCHAR (50),
+	age_check INT UNSIGNED,
+	legal_status INT UNSIGNED
 	)",
 	"CREATE TABLE IF NOT EXISTS referrals(
 	referral_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-	referral_1 BIT,
-	referral_2 BIT,
-	referral_3 BIT,
-	referral_4 BIT,
-	referral_5 BIT,
-	referral_6 BIT,
-	referral_7 BIT,
+	referral_1 INT UNSIGNED,
+	referral_2 INT UNSIGNED,
+	referral_3 INT UNSIGNED,
+	referral_4 INT UNSIGNED,
+	referral_5 INT UNSIGNED,
+	referral_6 INT UNSIGNED,
+	referral_7 INT UNSIGNED,
 	referral_8 VARCHAR(100),
 	referral_9 VARCHAR(100),
-	referral_10 BIT,
+	referral_10 INT UNSIGNED,
 	referral_11 VARCHAR(100)
 	)",
 	"CREATE TABLE IF NOT EXISTS schedules(
 	schedule_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-	weekly_hours TINYINT UNSIGNED NOT NULL,
-	commitments TEXT NOT NULL
+	weekly_hours TINYINT UNSIGNED,
+	commitments TEXT
 	)",
 	"CREATE TABLE IF NOT EXISTS experiences(
 	experience_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-	programming_option VARCHAR(100) NOT NULL,
-	work_option VARCHAR(100) NOT NULL,
+	programming_option INT UNSIGNED,
+	work_option INT UNSIGNED,
 	job_title VARCHAR(100),
 	front_end_experience TEXT,
 	lamp_stack_experience TEXT,
@@ -77,9 +77,9 @@ $sql = array(
 	)",
 	"CREATE TABLE IF NOT EXISTS materials(
 	material_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-	resume BLOB NOT NULL,
-	cover_letter BLOB NOT NULL,
-	reference_list TEXT NOT NULL,
+	resume BLOB,
+	cover_letter BLOB,
+	reference_list TEXT,
 	additional_info TEXT
 	)"
 	);
