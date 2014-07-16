@@ -10,7 +10,7 @@
 		<!-- Bootstrap -->
 		<link href="../public_html/css/bootstrap.css" rel="stylesheet">
 
-		<!-- Signin stylesheet from http://getbootstrap.com/examples/signin/ -->
+		<!-- Signin stylesheet -->
 		<link href="../public_html/css/signin.css" rel="stylesheet">
 
 		<!-- Custom CSS for Application Form -->
@@ -33,47 +33,48 @@
 
 		<div class="container-fluid">
 
-			<div class="row">
-				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+			<div class="row form">
+				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 bottomMargin">
 					<h1>A100 Application Form</h1>
 				</div>
 			</div>
 
-			<form action="insert.php" method="post" enctype="multipart/form-data">
+			<div class="row form">
+				<form action="insert.php" method="post" enctype="multipart/form-data">
 
-				<?php
-					include "cred_int.php";
+					<?php
+						include "cred_int.php";
 
-						//Create connection
-					$formCon = mysqli_connect(DB_HOST, DB_USERNAME, DB_PASSWORD, DB_FORM_DATABASE);
-					// Check connection
-					if (mysqli_connect_errno()) {
-						echo "Failed to connect to form_db MySQL: " . mysqli_connect_error();
-					}
+							//Create connection
+						$formCon = mysqli_connect(DB_HOST, DB_USERNAME, DB_PASSWORD, DB_FORM_DATABASE);
+						// Check connection
+						if (mysqli_connect_errno()) {
+							echo "Failed to connect to form_db MySQL: " . mysqli_connect_error();
+						}
 
-					//sorts content by section on sections.arrange
-					$qstnSql="SELECT * FROM fields INNER JOIN sections ON fields.section_id=sections.section_id ORDER BY sections.arrange"; 
-					$qstnArray = mysqli_query($formCon, $qstnSql);
+						//sorts content by section on sections.arrange
+						$qstnSql="SELECT * FROM fields INNER JOIN sections ON fields.section_id=sections.section_id ORDER BY sections.arrange"; 
+						$qstnArray = mysqli_query($formCon, $qstnSql);
 
-					$arrangeCounter =0;
-					while($row=mysqli_fetch_array($qstnArray))
-						{
-						//checks if moving to a new section, if counter is less than section.arrange, print header and body if available
-						if($arrangeCounter<$row['arrange'])
-						{
-							if($row['pre_text']==NULL && $row['post_text']==NULL)
+						$arrangeCounter =0;
+						while($row=mysqli_fetch_array($qstnArray))
 							{
-								echo "<h3>".$row['section_name']."*</h3>";
-							}else
+							//checks if moving to a new section, if counter is less than section.arrange, print header and body if available
+							if($arrangeCounter<$row['arrange'])
 							{
-								echo "<h3>".$row['section_name']."</h3>";
-							}
-							echo "<b>".$row['section_description']."</b>";
-							$arrangeCounter = $row['arrange'];
-							}
+								if($row['pre_text']==NULL && $row['post_text']==NULL)
+								{
+									echo "<h3>".$row['section_name']."*</h3>";
+								}else
+								{
+									echo "<h3>".$row['section_name']."</h3>";
+								}
+								echo "<b>".$row['section_description']."</b>";
+								$arrangeCounter = $row['arrange'];
+								}
 
-						if($row['is_active']==0){  //flag functionality not working right now due to ambiguous column headers
-							echo "is active flag:". $row['is_active'];
+							if($row['is_active']==X){  //flag functionality not working right now due to ambiguous column headers
+								echo "is active flag:". $row['is_active'];
 							}else
 							{
 								if($row['is_required']==1 && $row['post_text'] ==NULL && $row['pre_text']!= NULL){
@@ -109,8 +110,8 @@
 										$optnId=$optnRow['q_option_id'];
 										$optnName=$optnRow['option_name'];
 										if($optnInputType!=NULL){
-											echo "<input type='$optnInputType' name='$fieldName' value='$optnName'>$optnName";	
-										}else{echo "<input type='$optnInputType' name='$fieldName'>$optnName";}
+											echo "<input type='$optnInputType' name='$fieldName' value='$optnId'>$optnName";	
+										}else{echo "$optnName <input type='$optnInputType' name='$fieldName'>";}
 										echo "</br>";
 									}
 
@@ -141,14 +142,27 @@
 							}
 						}
 
-				?>
+					?>
 
-				<input type="submit" name ="submit" Value ="submit">
-				<input type="submit" name ="save" Value ="save">
-			</form>
+					<div class="row form">
+						<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 topMarginSmall bottomMargin">
+							<button class="btn btn-lg btn-primary btn-block" type="submit" name ="submit" Value ="submit">
+								Submit Completed Application</button>
+							<button class="btn btn-lg btn-primary btn-block" type="submit" name ="save" Value ="save">
+								Save Application to Complete Later</button>
+						</div>
+					</div>
 
-			<p><a href="../index.php">Return to Application Form login</a></p>
-			<p><a href="http://www.indie-soft.com/a100">Return to A100 Program website</a></p>
+				</form>
+			
+			</div>
+
+			<div class="row form">
+				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 bottomMargin">
+					<h4><a href="../index.php">Return to Application Form login</a></h4>
+					<h4><a href="http://www.indie-soft.com/a100">Return to A100 Program website</a></h4>
+				</div>
+			</div>
 
 		</div>
 
