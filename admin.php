@@ -32,6 +32,9 @@
 	<body>
 		<h1>Admin Functionality</h1>
 
+		<!-- Use admin DB credentials -->
+		<?php include 'admin/cred_admin.php' ?>
+
 		<?php include 'resources/select.php' ?>
 
 		<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
