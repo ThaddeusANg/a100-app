@@ -33,13 +33,13 @@
 
 		<div class="container-fluid">
 
-			<div class="row form">
+			<div class="row">
 				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 bottomMargin">
 					<h1>A100 Application Form</h1>
 				</div>
 			</div>
 
-			<div class="row form">
+			<div class="row">
 				<form action="insert.php" method="post" enctype="multipart/form-data">
 
 					<?php
@@ -53,55 +53,58 @@
 						}
 
 						//sorts content by section on sections.arrange
-						$qstnSql="SELECT * FROM fields INNER JOIN sections ON fields.section_id=sections.section_id ORDER BY sections.arrange"; 
+						$qstnSql = "SELECT * FROM fields INNER JOIN sections 
+							ON fields.section_id=sections.section_id ORDER BY sections.arrange"; 
 						$qstnArray = mysqli_query($formCon, $qstnSql);
 
-						$arrangeCounter =0;
-						while($row=mysqli_fetch_array($qstnArray))
+						$arrangeCounter = 0;
+						while($row = mysqli_fetch_array($qstnArray))
 							{
-							//checks if moving to a new section, if counter is less than section.arrange, print header and body if available
+							// checks if moving to a new section, if counter is less than section.arrange, print header and body if available
 							if($arrangeCounter<$row['arrange'])
 							{
 								if($row['pre_text']==NULL && $row['post_text']==NULL)
 								{
-									echo "<h3>".$row['section_name']."*</h3>";
+									echo "<h3>" . $row['section_name'] . "*</h3>";
 								}else
 								{
-									echo "<h3>".$row['section_name']."</h3>";
+									echo "<h3>" . $row['section_name'] . "</h3>";
 								}
-								echo "<b>".$row['section_description']."</b>";
+								echo "<b>" . $row['section_description'] . "</b>";
 								$arrangeCounter = $row['arrange'];
 								}
 
 							if($row['is_active']==X){  //flag functionality not working right now due to ambiguous column headers
-								echo "is active flag:". $row['is_active'];
+								echo "is active flag:" . $row['is_active'];
 							}else
 							{
-								if($row['is_required']==1 && $row['post_text'] ==NULL && $row['pre_text']!= NULL){
-									echo "<h4>".$row['pre_text']."*</h4>";
+								if($row['is_required']==1 && $row['post_text']==NULL && $row['pre_text']!= NULL){
+									echo "<h4>" . $row['pre_text'] . "*</h4>";
 								}else{
-									echo "<h4>".$row['pre_text']."</h4>";}
+									echo "<h4>" . $row['pre_text'] . "</h4>";}
 
-								$insideText="";  //variable to hold inside text content/reduce need for " and '
-								$fieldName=$row['field_name'];  //variable to hold DB name content/reduce need for " and '
-								$fieldId=$row['field_id'];  //variable to hold DB name content/reduce need for " and '
+								$insideText = "";  //variable to hold inside text content/reduce need for " and '
+								$fieldName = $row['field_name'];  //variable to hold DB name content/reduce need for " and '
+								$fieldId = $row['field_id'];  //variable to hold DB name content/reduce need for " and '
+								
 								if($row['inside_text']!=NULL){
-									$insideText=$row['inside_text'];
+									$insideText = $row['inside_text'];
 								}
 
 								if($row['options_target']==NULL)
 								{
-									echo "<input type='text' name='$fieldName' value='$insideText'>";
+									echo "<input class='form-control' type='text' name='$fieldName' placeholder='$insideText'>";
 								}elseif($row['options_target']=='textarea'){
-									echo "</br><textarea name='$fieldName'>".$insideText."</textarea>";
+									echo "</br><textarea class='form-control' name='$fieldName' placeholder='$insideText'></textarea>";
 								}elseif($row['options_target']=='file'){
 									//echo "</br><label for=".$fieldName.">".$fieldName."</label>";
-									echo "<input type='file' name=".$fieldName." id=".$fieldName."><br>";
+									echo "<input type='file' name=" . $fieldName . " id=" . $fieldName . "><br>";
 								}
 								elseif($row['options_target']=="question_options"){
 									
 									//handles multiple choice options reading from question_options table
-									$optnSql="SELECT * FROM fields INNER JOIN question_options WHERE fields.field_name = '$fieldName' AND question_options.field_name='$fieldName'";
+									$optnSql="SELECT * FROM fields INNER JOIN question_options 
+										WHERE fields.field_name = '$fieldName' AND question_options.field_name='$fieldName'";
 									$optnArray = mysqli_query($formCon, $optnSql);
 
 									while($optnRow=mysqli_fetch_array($optnArray)){
@@ -117,14 +120,14 @@
 
 								}else{
 									$targetTable = $row['options_target'];
-									$dropDownSql="SELECT * FROM $targetTable";
-									$dropDownArray=mysqli_query($formCon,$dropDownSql);
+									$dropDownSql = "SELECT * FROM $targetTable";
+									$dropDownArray = mysqli_query($formCon,$dropDownSql);
 									echo "</br>";
 									echo "<select name='$fieldName'>";
 									echo "<option>Select a value</option>";
-										while($dropDownRow=mysqli_fetch_array($dropDownArray)){
+										while($dropDownRow = mysqli_fetch_array($dropDownArray)){
 											echo "test";
-											$dropDownValue=$dropDownRow['name'];
+											$dropDownValue = $dropDownRow['name'];
 											echo "<option value='$dropDownValue'>$dropDownValue</option>";
 										}
 									echo "</select>";
@@ -134,7 +137,7 @@
 								if($row['post_text']!=NULL)
 								{
 									if($row['is_required']==1){
-										echo $row['post_text']."*";
+										echo $row['post_text'] . "*";
 									}else{
 										echo $row['post_text'];
 									}
