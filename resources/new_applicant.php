@@ -160,13 +160,6 @@
 			
 			</div>
 
-			<div class="row form">
-				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 bottomMargin">
-					<h4><a href="../index.php">Return to Application Form login</a></h4>
-					<h4><a href="http://www.indie-soft.com/a100">Return to A100 Program website</a></h4>
-				</div>
-			</div>
-
 		</div>
 
 		<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
