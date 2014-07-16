@@ -30,16 +30,28 @@
 	</head>
 
 	<body>
-		<h1>Admin Functionality</h1>
 
-		<!-- Use admin DB credentials -->
-		<?php include 'admin/cred_admin.php' ?>
+		<div class="container-fluid">
 
-		<?php include 'resources/select.php' ?>
+			<div class="row">
+				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 bottomMargin">
+					<h1>Admin Functionality</h1>
+				</div>
+			</div>
+
+			<!-- Use admin DB credentials -->
+			<?php include 'admin/cred_admin.php' ?>
+
+			<!-- Select all applications table include statement -->
+			<?php include 'resources/select.php' ?>
+
+		</div>	
 
 		<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 		<!-- Include all compiled plugins (below), or include individual files as needed -->
 		<script src="public_html/js/bootstrap.js"></script>
+
 	</body>
+	
 </html>
