@@ -58,17 +58,18 @@
 						$emailLogin = $_POST['emailLogin'];
 						$passwordLogin = $_POST['passwordLogin'];
 						$cohortLogin = $_POST['cohortLogin'];
-						echo $emailLogin, $passwordLogin, $cohortLogin;
 
 						//   !!! NOT MODULARIZED !!!
 						$backloadSql="SELECT * FROM applications   
-							INNER JOIN applicants ON applications.applicant_id=applicants.applicant_id 
-							INNER JOIN identity ON applications.identity_id=identity.identity_id
-							INNER JOIN referrals ON applications.referral_id=referrals.referral_id
-							INNER JOIN schedules ON applications.schedule_id=schedules.schedule_id
-							INNER JOIN experiences ON applications.experience_id=experiences.experience_id
-							INNER JOIN materials ON applications.material_id=materials.material_id
-							WHERE identity.email= '".$emailLogin."' AND identity.password ='".$passwordLogin."' AND applications.cohort_id='".$cohortLogin."'";
+							INNER JOIN applicants ON applications.applicant_id = applicants.applicant_id 
+							INNER JOIN identity ON applications.identity_id = identity.identity_id
+							INNER JOIN referrals ON applications.referral_id = referrals.referral_id
+							INNER JOIN schedules ON applications.schedule_id = schedules.schedule_id
+							INNER JOIN experiences ON applications.experience_id = experiences.experience_id
+							INNER JOIN materials ON applications.material_id = materials.material_id
+							WHERE identity.email = '" . $emailLogin . "' 
+								AND identity.password = '" . $passwordLogin . "' 
+								AND applications.cohort_name = '" . $cohortLogin . "'";
 
 						$qstnArray = mysqli_query($formCon, $qstnSql);
 						$backloadArray = mysqli_query($appCon, $backloadSql);
