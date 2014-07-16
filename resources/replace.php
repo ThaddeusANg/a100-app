@@ -7,34 +7,25 @@ $formCon = mysqli_connect(DB_HOST, DB_USERNAME, DB_PASSWORD, DB_FORM_DATABASE);
 if(mysqli_connect_errno()){
 	echo "Failed to connect to MySQL: ".mysqli_connect_error();
 }
-/*
-$sqlFieldNames = "SELECT field_id, field_name, response_target FROM fields";
-$fieldNamesArray = mysqli_query($formCon, $sqlFieldNames);
-$respArray= array();
-
-$x=0;
-while($fieldNamesRows = mysqli_fetch_array($fieldNamesArray)){
-	$fieldId=$fieldNamesRows['field_id'];
-	$varName=$fieldNamesRows['field_name'];
-	$response_target=$fieldNamesRows['response_target'];
-	$respArray[$x] = array($fieldId, $_POST[$varName], $varName, $response_target);
-	echo $x.": ".$_POST[$varName]."->".$fieldId." ,".$varName." ,".$response_target."</br>";
-	//echo $x.": ".$respArray[$x][0]." ,".$respArray[$x][1]." ,".$respArray[$x][2]." ,".$respArray[$x][3]." from array</br>";
-	$x++;
-}
-*/
 
 //check for duplicates by applicant ID and cohort content
+$emailCheck = $_POST['email'];
+$cohortCheck=$_POST['cohort_id'];
+
 $sqlDup = 
 "SELECT * FROM applications INNER JOIN identity	ON applications.identity_id=identity.identity_id 
-WHERE identity.email='".$_POST['email'] ."' AND applications.cohort_name ='".$_POST['cohort_id']."'";  //!!warning var cohort_id CONTAINS cohort_name
-$dup = mysqli_query($appCon, $sqlDup);  //sql runs sql code and gets possible duplicates
+WHERE identity.email='$emailCheck' AND applications.cohort_name ='$cohortCheck'";  //!!warning var cohort_id CONTAINS cohort_name
+
+$dup = mysqli_query($appCon, $sqlDup);  //runs sql code and gets possible duplicates
+$dupContent = mysqli_fetch_array($dup);
+
 $dupCount = mysqli_num_rows($dup);  //counts total duplicate values
 
 //checks for duplicates, if greater than 1, throw dup record and stop else write to DB
-if($dupCount >2){
+if($dupCount >1){
 	echo "Someone has enrolled in: ".$_POST['cohort_id']." with the provided email address already, thank you for your interest.";
 }else{
+
  	$reqArray = mysqli_query($formCon, "SELECT field_name, is_required FROM fields");
  	$malformedInput=0;
  	while($required = mysqli_fetch_array($reqArray))
@@ -64,7 +55,7 @@ if($dupCount >2){
 		    //Base string, will be formatted as input is entered
 		    $submitSqlField="";
 		    $submitSqlRecord="";
-		    $submitSql;
+		    $submitSql="";
 		    $sqlFirst=0;
 		    
 		    //start modifying content for insertion
@@ -74,19 +65,11 @@ if($dupCount >2){
 		    	if($sqlFirst!=0){
 		    		$submitSqlField=$submitSqlField.",";
 		    		$submitSqlRecord=$submitSqlRecord.",";
-		    					}else{
-		    						//retrieves primary key content, pushes to replacePrimaryKeyArray
-		    						array_push($replacePrimarykey, $_POST['$submitSqlField']);
 		    					}
 
 		    	//retrieves column name and table name
 		    	$colName = $finfo->name;
 		    	$submitSqlTable=$finfo->table;		    	
-
-		    	//echo "1 if required, 0 if optional : colName: ". $colName. "  input is: ".$required['is_required']."</br>";
-		    	
-		    	//inserts into 
-		        //$submitSqlField=$submitSqlField."`".$colName."`";
 
 		        //file submission, checks if field names reference resume/cover letter !! not modularized  !!
 		        if($colName=="resume"||$colName=="cover_letter"){
@@ -94,9 +77,6 @@ if($dupCount >2){
 		        		echo "Return Code: " . $_FILES[$colName]["error"] . "<br>";
 		        	} else {
 		        		echo "Upload: " . $_FILES[$colName]["name"] . "<br>";
-		        		//echo "Type: " . $_FILES[$colName]["type"] . "<br>";
-		        		//echo "Size: " . ($_FILES[$colName]["size"] / 1024) . " kB<br>";
-		        		//echo "Temp file: " . $_FILES[$colName]["tmp_name"] . "<br>";
 		        		if (file_exists("upload/" . $_FILES[$colName]["name"])) {
 		        			echo $_FILES[$colName]["name"] . " already exists. ";
 		        		} else {
@@ -114,46 +94,51 @@ if($dupCount >2){
 			        	//file submission as no submitted value sent via normal ways
 			        	//if object name is resume or cover letter write file path to DB
 			        	if($colName=="resume"||$colName=="cover_letter"){
-			        		//adds fileloc to insert code
-			        		//$submitSqlRecord=$submitSqlRecord."'".$fileLoc."'";	
 			        		//updates into
-			        		$submitSql = $colName."='".$fileLoc."',";
+			        		if($fileLoc!=""){
+			        			$old = $colName."_old";
+			        			$submitSql = $submitSql. $colName."='".$_POST['$old']."',";
+			        		}
+			        		else{
+			        			$submitSql = $submitSql. $colName."='".$fileLoc."',";
+			        		}
+			        			
 			        	}else
 			        	// writes a NULL value like for PK
 			        	{
-			        		if($required==1 && $_POST['submit']){
-			        			break;
-			        		}elseif($sqlFirst==0){
-			        			$replacePrimary = $_POST[$colName];
-			        			$submitSql = $colName."='".$replacePrimary."'";
-			        		}
-			        		//updates into
-			        		$submitSql = $submitSql.$colName."=NULL,";
+			        		if($sqlFirst==0){
+			        			$replacePrimaryColumn = $colName;
+			        			$replacePrimary = $dupContent[$colName];
+			        			$sqlFirst=$sqlFirst +1;
+			        		}else{
+			        			//updates into
+			        			if($submitSql==""){
+			        				$submitSql = $submitSql.$colName."='".$_POST[$colName]."'";
+			        			}else{$submitSql = $submitSql.", ".$colName."='".$_POST[$colName]."'";}
 			        		//increment tracker so system knows to format with commas
 			        		$sqlFirst=$sqlFirst +1;
+			        		}
 			        	}
 			        }else
 			        //if POST content isn't null, write POST content with formatting into string for SQL insertion
-			        //{$submitSqlRecord=$submitSqlRecord."'".$_POST[$colName]."'";}	
 			        //updates into
-			        $submitSql = $colName."='".$_POST[$colName]."',";
+			        if($submitSql==""){
+			        	$submitSql = $submitSql.$colName."='".$_POST[$colName]."'";
+			        }else{$submitSql = $submitSql.", ".$colName."='".$_POST[$colName]."'";}
+			        
 		        }
 		    }
 
-		    
 			//sql for writing to DB
-			if($submitSqlTable!="applications"){
 				//$submitSql code from insert malfunctioning
-				$submitSql = "UPDATE `applications_db`.`".$submitSqlTable."` SET ".$submitSql." WHERE".$colName."='".$replacePrimary."'";
+				$submitFinSql = "UPDATE `applications_db`.`".$submitSqlTable."` SET ".$submitSql." WHERE ".$replacePrimaryColumn."=".$replacePrimary;
 				echo $submitSql;
-				if (mysqli_query($appCon, $submitSql)){
+				if (mysqli_query($appCon, $submitFinSql)){
 					echo "Table updated successfully. \n";
 				}else{
-				echo "Error executing: " . $submitSql . "\nError produced: " . mysqli_error($appCon) . "\n";
+				echo "Error executing: " . $submitFinSql . "\nError produced: " . mysqli_error($appCon) . "\n";
 				}
-				$identity_id= mysqli_insert_id($appCon);
-				echo $submitSqlTable." key: ".$identity_id;
-			}
+				echo "</br>";
 
 	echo "</br>";
 		}
@@ -183,17 +168,15 @@ if($dupCount >2){
 				</html>";
 			}
 
-	$applicationSqlInsert=$applicationSqlInsert.", '".$status."',NULL";
-	$submitSql = "UPDATE `applications_db`.`".$submitSqlTable."` (".$submitSqlField.")VALUES (".$applicationSqlInsert.")";
-	echo "final insert".$submitSql;
-
-	if (mysqli_query($appCon, $submitSql)){
-				echo "Table updated successfully. \n";
-			}else{
-				echo "Error executing: " . $submitSql . "\nError produced: " . mysqli_error($appCon) . "\n";
-			}
-
-
+			$submitSql = "is_complete = '".$status."'";
+			$submitFinSql = "UPDATE `applications_db`.`applications` SET ".$submitSql." WHERE applications.application_id=".$dupContent['application_id'];
+				echo $submitFinSql;
+				if (mysqli_query($appCon, $submitFinSql)){
+					echo "Table updated successfully. \n";
+				}else{
+				echo "Error executing: " . $submitFinSql . "\nError produced: " . mysqli_error($appCon) . "\n";
+				}
+				echo "</br>";
 
 mysqli_free_result($result);
 
@@ -416,6 +399,5 @@ if (mysqli_query($appCon, $submitSql)){
 			echo "Error executing: " . $submitSql . "\nError produced: " . mysqli_error($appCon) . "\n";
 		}
 */
-
 mysql_close($con);
 ?>
