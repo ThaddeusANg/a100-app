@@ -92,79 +92,82 @@
 							{
 								if($row['pre_text']==NULL && $row['post_text']==NULL)
 								{
-									echo "<h3>".$row['section_name']."*</h3>";
+									echo "<h3>" . $row['section_name'] . "*</h3>";
 								}else
 								{
-									echo "<h3>".$row['section_name']."</h3>";
+									echo "<h3>" . $row['section_name'] . "</h3>";
 								}
-								echo "<b>".$row['section_description']."</b>";
+								echo "<b>" . $row['section_description'] . "</b>";
 								$arrangeCounter = $row['arrange'];
 								}
 
 							if($row['is_active']==x){  //flag functionality not working right now due to ambiguous column headers
-								echo "is active flag:". $row['is_active'];
+								echo "is active flag:" . $row['is_active'];
 								}else
 								{
 									if($row['is_required']==1 && $row['post_text'] ==NULL && $row['pre_text']!= NULL){
-										echo "<h4>".$row['pre_text']."*</h4>";
+										echo "<h4>".$row['pre_text'] . "*</h4>";
 									}else{
-										echo "<h4>".$row['pre_text']."</h4>";}
+										echo "<h4>".$row['pre_text'] . "</h4>";}
 
-									$insideText="";  //variable to hold inside text content/reduce need for " and '
-									$fieldName=$row['field_name'];  //variable to hold DB name content/reduce need for " and '
-									$fieldId=$row['field_id'];  //variable to hold DB name content/reduce need for " and '
+									$insideText = "";  //variable to hold inside text content/reduce need for " and '
+									$fieldName = $row['field_name'];  //variable to hold DB name content/reduce need for " and '
+									$fieldId = $row['field_id'];  //variable to hold DB name content/reduce need for " and '
 
-									echo $backloadRow[$fieldName]." from stored ".$fieldName."</br>";
+									echo $backloadRow[$fieldName] . " from stored " . $fieldName . "</br>";
 									if($backloadRow[$fieldName]!=NULL){
 										//echo $backloadRow['$fieldName']." from stored ".$fieldName."</br>";
-										$insideText=$backloadRow[$fieldName];
+										$insideText = $backloadRow[$fieldName];
 									}elseif($row['inside_text']!=NULL){
-										$insideText=$row['inside_text'];
+										$insideText = $row['inside_text'];
 									}
 
-									if($fieldName=='password' || $fieldName=='cohort_id'||$fieldName=='email'){
-										$_POST['password']=$backloadRow['password'];
-										$_POST['cohort_id']=$backloadRow['cohort_id'];
-										$_POST['email']=$backloadRow['email'];
-										}else{
-															if($row['options_target']==NULL)
+									if($fieldName=='password' || $fieldName=='cohort_id' || $fieldName=='email'){
+										$_POST['password'] = $backloadRow['password'];
+										$_POST['cohort_id'] = $backloadRow['cohort_id'];
+										$_POST['email'] = $backloadRow['email'];
+									}else{
+										if($row['options_target']==NULL)
 										{
 											echo "<input type='text' name='$fieldName' value='$insideText'>";
 										}elseif($row['options_target']=='textarea'){
-											echo "</br><textarea name='$fieldName'>".$insideText."</textarea>";
+											echo "</br><textarea name='$fieldName'>" . $insideText . "</textarea>";
 										}elseif($row['options_target']=='file'){
 											//echo "</br><label for=".$fieldName.">".$fieldName."</label>";
-											$old = $fieldName."_old";
+											$old = $fieldName . "_old";
 											$_POST['$old']==$backloadRow['$fieldName'];
-											echo "<input type='file' name=".$fieldName." id=".$fieldName."><br>";
+											echo "<input type='file' name=" . $fieldName . " id=" . $fieldName . "><br>";
 										}
 										elseif($row['options_target']=="question_options"){
 											
 											//handles multiple choice options reading from question_options table
-											$optnSql="SELECT * FROM fields INNER JOIN question_options WHERE fields.field_name = '$fieldName' AND question_options.field_name='$fieldName'";
+											$optnSql = "SELECT * FROM fields INNER JOIN question_options WHERE fields.field_name = '$fieldName' 
+												AND question_options.field_name='$fieldName'";
 											$optnArray = mysqli_query($formCon, $optnSql);
 
-											while($optnRow=mysqli_fetch_array($optnArray)){
+											while($optnRow = mysqli_fetch_array($optnArray)){
 												$optnInputType = $optnRow['input_type'];
 												//$optnFieldId=$optnRow['field_id'];
-												$optnId=$optnRow['q_option_id'];
-												$optnName=$optnRow['option_name'];
+												$optnId = $optnRow['q_option_id'];
+												$optnName = $optnRow['option_name'];
 												if($optnInputType!=NULL){
 													echo "<input type='$optnInputType' name='$fieldName' value='$optnId'>$optnName";	
-												}else{echo "<input type='$optnInputType' name='$fieldName'>$optnName";}
+												}else{
+													echo "<input type='$optnInputType' name='$fieldName'>$optnName";
+												}
 												echo "</br>";
 											}
 
 										}else{
 											$targetTable = $row['options_target'];
-											$dropDownSql="SELECT * FROM $targetTable";
-											$dropDownArray=mysqli_query($formCon,$dropDownSql);
+											$dropDownSql = "SELECT * FROM $targetTable";
+											$dropDownArray = mysqli_query($formCon,$dropDownSql);
 											echo "</br>";
 											echo "<select name='$fieldName'>";
 											echo "<option>Select a value</option>";
-												while($dropDownRow=mysqli_fetch_array($dropDownArray)){
+												while($dropDownRow = mysqli_fetch_array($dropDownArray)){
 													echo "test";
-													$dropDownValue=$dropDownRow['name'];
+													$dropDownValue = $dropDownRow['name'];
 													echo "<option value='$dropDownValue'>$dropDownValue</option>";
 												}
 											echo "</select>";
@@ -174,7 +177,7 @@
 										if($row['post_text']!=NULL)
 										{
 											if($row['is_required']==1){
-												echo $row['post_text']."*";
+												echo $row['post_text'] . "*";
 											}else{
 												echo $row['post_text'];
 											}
