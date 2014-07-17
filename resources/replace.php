@@ -22,8 +22,13 @@
 	//checks for duplicates, if greater than 1, throw dup record and stop else write to DB
 	if($dupCount >1){
 		echo "Someone has enrolled in: " . $_POST['cohort_name'] . " with the provided email address already, thank you for your interest.";
+		echo "<a href='../index.php'>Click Back</a>";
 	}else{
-
+		if($dupContent['is_complete'==1){
+			echo "Thank you for applying to Apprentice100.  We will contact you shortly with the results of your application";
+			echo "<a href='../index.php'>Click Back</a>";
+			exit;
+		}
 	 	$reqArray = mysqli_query($formCon, "SELECT field_name, is_required FROM fields");
 	 	$malformedInput = 0;
 	 	while($required = mysqli_fetch_array($reqArray))
