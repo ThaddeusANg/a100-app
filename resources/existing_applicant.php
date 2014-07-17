@@ -58,7 +58,7 @@
 						$emailLogin = $_POST['emailLogin'];
 						$passwordLogin = $_POST['passwordLogin'];
 						$cohortLogin = $_POST['cohortLogin'];
-						echo $emailLogin . " " . $passwordLogin . " " . $cohortLogin;
+						// echo $emailLogin . " " . $passwordLogin . " " . $cohortLogin;
 
 						//   !!! NOT MODULARIZED !!!
 						$backloadSql="SELECT * FROM applications   
