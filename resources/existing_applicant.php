@@ -38,7 +38,7 @@
 				</div>
 			</div>
 
-			<div class="row form">
+			<div class="row">
 				<form action="replace.php" method="post" enctype="multipart/form-data">
 
 					<?php
