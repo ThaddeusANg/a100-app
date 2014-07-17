@@ -156,17 +156,26 @@
 											while($optnRow = mysqli_fetch_array($optnArray)){
 												$optnInputType = $optnRow['input_type'];
 												//$optnFieldId=$optnRow['field_id'];
+												$optnOldContent = $backloadRow[$fieldName];
 												$optnId = $optnRow['q_option_id'];
 												$optnName = $optnRow['option_name'];
+												
 												if($optnInputType!=NULL){
-													echo "<input type='$optnInputType' name='$fieldName' value='$optnId'>$optnName";	
+													echo "<input type='$optnInputType' name='$fieldName' value='$optnId' ";
+													if($optnOldContent==$optnId){
+														echo "checked";
+													}
+													echo ">$optnName";	
 												}else{
-													echo "<input type='$optnInputType' name='$fieldName'>$optnName";
+													echo "<input type='$optnInputType' name='$fieldName' ";
+													echo ">$optnName";
 												}
 												echo "</br>";
 											}
 
 										}else{
+											$optnOldContent = $backloadRow[$fieldName];
+											//echo "$optnOldContent";
 											$targetTable = $row['options_target'];
 											$dropDownSql = "SELECT * FROM $targetTable";
 											$dropDownArray = mysqli_query($formCon,$dropDownSql);
@@ -174,9 +183,12 @@
 											echo "<select name='$fieldName'>";
 											echo "<option>Select a value</option>";
 												while($dropDownRow = mysqli_fetch_array($dropDownArray)){
-													echo "test";
 													$dropDownValue = $dropDownRow['name'];
-													echo "<option value='$dropDownValue'>$dropDownValue</option>";
+													echo "<option value='$dropDownValue' ";
+											/*		if($optnOldContent==$dropDownValue)
+													{
+														echo "selected";}else{}*/
+													echo ">$dropDownValue</option>";
 												}
 											echo "</select>";
 										}

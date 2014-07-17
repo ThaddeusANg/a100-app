@@ -81,7 +81,7 @@
 			        			move_uploaded_file($_FILES[$colName]["tmp_name"],
 			        				"upload/" . $_FILES[$colName]["name"]);
 			        			$fileLoc= "Stored in: " . "upload/" . $_FILES[$colName]["name"];
-			        			echo $fileLoc;
+			        			//echo $fileLoc;
 			        		}
 			        	}
 			        }
@@ -139,7 +139,7 @@
 					//$submitSql code from insert malfunctioning
 					$submitFinSql = "UPDATE `applications_db`.`" . $submitSqlTable . "` SET " . $submitSql
 						. " WHERE " . $replacePrimaryColumn . "=" . $replacePrimary;
-					echo $submitSql;
+					//echo $submitSql;
 					if (mysqli_query($appCon, $submitFinSql)){
 						echo "Table updated successfully. \n";
 					}else{
@@ -178,7 +178,7 @@
 				$submitSql = "is_complete = '" . $status . "'";
 				$submitFinSql = "UPDATE `applications_db`.`applications` SET " . $submitSql 
 					. " WHERE applications.application_id=".$dupContent['application_id'];
-					echo $submitFinSql;
+					//echo $submitFinSql;
 				if (mysqli_query($appCon, $submitFinSql)){
 					echo "Table updated successfully. \n";
 				}else{
