@@ -45,6 +45,17 @@
 
 				}elseif($_POST['save'])
 				{
+			 			if($_POST['email']==NULL || $_POST['password']==NULL || $_POST['cohort_name']==NULL)
+			 			{
+				 			echo "Please Submit a valid email address and password and Select your desired Cohort to save your progress</br>";
+			 			}
+			 			$malformedInput = 1;
+			 				
+			 		if($malformedInput==1){
+						echo "<a href='../index.php'>Click Back</a>";
+			 			exit;
+			 		}
+				
 					$status = 0;
 					$to = $email;
 					$subject = "Thank you for your interest in Apprentice 100";
