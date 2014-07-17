@@ -58,6 +58,7 @@
 						$emailLogin = $_POST['emailLogin'];
 						$passwordLogin = $_POST['passwordLogin'];
 						$cohortLogin = $_POST['cohortLogin'];
+						echo $emailLogin . " " . $passwordLogin . " " . $cohortLogin;
 
 						//   !!! NOT MODULARIZED !!!
 						$backloadSql="SELECT * FROM applications   
@@ -88,18 +89,24 @@
 								echo "This application has been completed";
 								echo "<p><a href='../index.php'>Click here to go to gateway</a></p>";
 							}
-							if($arrangeCounter<$row['arrange'])
-							{
-								if($row['pre_text']==NULL && $row['post_text']==NULL)
+
+							$fieldName = $row['field_name'];  //variable to hold DB name content/reduce need for " and '
+							if($fieldName=='password' || $fieldName=='cohort_name' || $fieldName=='email'){
+
+							}else{
+									if($arrangeCounter<$row['arrange'])
 								{
-									echo "<h3>" . $row['section_name'] . "*</h3>";
-								}else
-								{
-									echo "<h3>" . $row['section_name'] . "</h3>";
-								}
-								echo "<b>" . $row['section_description'] . "</b>";
-								$arrangeCounter = $row['arrange'];
-								}
+									if($row['pre_text']==NULL && $row['post_text']==NULL)
+									{
+										echo "<h3>" . $row['section_name'] . "*</h3>";
+									}else
+									{
+										echo "<h3>" . $row['section_name'] . "</h3>";
+									}
+									echo "<b>" . $row['section_description'] . "</b>";
+									$arrangeCounter = $row['arrange'];
+									}
+							}
 
 							if($row['is_active']==x){  //flag functionality not working right now due to ambiguous column headers
 								echo "is active flag:" . $row['is_active'];
@@ -111,10 +118,10 @@
 										echo "<h4>".$row['pre_text'] . "</h4>";}
 
 									$insideText = "";  //variable to hold inside text content/reduce need for " and '
-									$fieldName = $row['field_name'];  //variable to hold DB name content/reduce need for " and '
+									//$fieldName = $row['field_name'];  //variable to hold DB name content/reduce need for " and '
 									$fieldId = $row['field_id'];  //variable to hold DB name content/reduce need for " and '
 
-									echo $backloadRow[$fieldName] . " from stored " . $fieldName . "</br>";
+									//echo $backloadRow[$fieldName] . " from stored " . $fieldName . "</br>";
 									if($backloadRow[$fieldName]!=NULL){
 										//echo $backloadRow['$fieldName']." from stored ".$fieldName."</br>";
 										$insideText = $backloadRow[$fieldName];
@@ -122,10 +129,10 @@
 										$insideText = $row['inside_text'];
 									}
 
-									if($fieldName=='password' || $fieldName=='cohort_id' || $fieldName=='email'){
-										$_POST['password'] = $backloadRow['password'];
-										$_POST['cohort_id'] = $backloadRow['cohort_id'];
-										$_POST['email'] = $backloadRow['email'];
+									if($fieldName=='password' || $fieldName=='cohort_name' || $fieldName=='email'){
+										echo "<input type='hidden' name='password' value='".$passwordLogin."'>";
+										  echo "<input type='hidden' name='cohort_name' value='".$cohortLogin."'>";
+										  echo "<input type='hidden' name='email' value='".$emailLogin."'>";
 									}else{
 										if($row['options_target']==NULL)
 										{
@@ -135,8 +142,9 @@
 										}elseif($row['options_target']=='file'){
 											//echo "</br><label for=".$fieldName.">".$fieldName."</label>";
 											$old = $fieldName . "_old";
-											$_POST['$old']==$backloadRow['$fieldName'];
+											$oldContent=$backloadRow[$fieldName];
 											echo "<input type='file' name=" . $fieldName . " id=" . $fieldName . "><br>";
+											echo "<input type='hidden' name=".$old." value='".$oldContent."'>";
 										}
 										elseif($row['options_target']=="question_options"){
 											

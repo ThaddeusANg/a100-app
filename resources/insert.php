@@ -11,14 +11,14 @@
 	//check for duplicates by applicant ID and cohort content
 	$sqlDup = "SELECT * FROM applications INNER JOIN identity 
 		ON applications.identity_id = identity.identity_id 
-		WHERE identity.email = '" . $_POST['email'] . "' AND applications.cohort_name ='" . $_POST['cohort_id'] . "'";
+		WHERE identity.email = '" . $_POST['email'] . "' AND applications.cohort_name ='" . $_POST['cohort_name'] . "'";
 		//!!warning var cohort_id CONTAINS cohort_name
 	$dup = mysqli_query($appCon, $sqlDup);  //sql runs sql code and gets possible duplicates
 	$dupCount = mysqli_num_rows($dup);  //counts total duplicate values
 
 	//checks for duplicates, if greater than 1, throw dup record and stop else write to DB
 	if($dupCount >1){
-		echo "Someone has enrolled in: " . $_POST['cohort_id'] . 
+		echo "Someone has enrolled in: " . $_POST['cohort_name'] . 
 			" with the provided email address already, thank you for your interest.";
 	}else{
 		//checks if user has submitted or saved the form, if submit switch flag to 1 to lock form else leave at 0
@@ -100,9 +100,9 @@
 			        //file submission, checks if field names reference resume/cover letter !! not modularized  !!
 			        if($colName=="resume" || $colName=="cover_letter"){
 			        	if ($_FILES[$colName]["error"] > 0) {
-			        		echo "Return Code: " . $_FILES[$colName]["error"] . "<br>";
+			        		//echo "Return Code: " . $_FILES[$colName]["error"] . "<br>";
 			        	} else {
-			        		echo "Upload: " . $_FILES[$colName]["name"] . "<br>";
+			        		//echo "Upload: " . $_FILES[$colName]["name"] . "<br>";
 			        		//echo "Type: " . $_FILES[$colName]["type"] . "<br>";
 			        		//echo "Size: " . ($_FILES[$colName]["size"] / 1024) . " kB<br>";
 			        		//echo "Temp file: " . $_FILES[$colName]["tmp_name"] . "<br>";
@@ -113,7 +113,7 @@
 			        			move_uploaded_file($_FILES[$colName]["tmp_name"],
 			        				"upload/" . $_FILES[$colName]["name"]);
 			        			$fileLoc= "Stored in: " . "upload/" . $_FILES[$colName]["name"];
-			        			echo $fileLoc;
+			        		//	echo $fileLoc;
 			        		}
 			        	}
 			        }
@@ -148,21 +148,21 @@
 				if($submitSqlTable!="applications"){
 					$submitSql = "INSERT INTO `applications_db`.`" . $submitSqlTable . "` (" . $submitSqlField
 						. ")VALUES (" . $submitSqlRecord . ")";
-					echo $submitSql;
+					//echo $submitSql;
 					if (mysqli_query($appCon, $submitSql)){
 						echo "Table updated successfully. \n";
 					}else{
 					echo "Error executing: " . $submitSql . "\nError produced: " . mysqli_error($appCon) . "\n";
 					}
 					$identity_id= mysqli_insert_id($appCon);
-					echo $submitSqlTable . " key: " . $identity_id;
+					//echo $submitSqlTable . " key: " . $identity_id;
 				}
 				
 				//manual collection of FKs for applications table !! NOT MODULARIZED !!
 				if($submitSqlTable!="applications"){
 						if($submitSqlTable == "identity"){			
 							$applicationSqlInsert = $applicationSqlInsert . ",'" . $identity_id . "','" 
-							. $_POST['cohort_id'] . "'";
+							. $_POST['cohort_name'] . "'";
 						}else{		
 							$applicationSqlInsert = $applicationSqlInsert . ", '" . $identity_id . "'";
 						}
@@ -176,7 +176,7 @@
 		$applicationSqlInsert = $applicationSqlInsert . ", '" . $status . "',NULL";
 		$submitSql = "INSERT INTO `applications_db`.`" . $submitSqlTable . "` (" . $submitSqlField
 			. ")VALUES (" . $applicationSqlInsert . ")";
-		echo "final insert" . $submitSql;
+		//echo "final insert" . $submitSql;
 
 		if (mysqli_query($appCon, $submitSql)){
 					echo "Table updated successfully. \n";

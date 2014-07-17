@@ -10,20 +10,18 @@
 
 	//check for duplicates by applicant ID and cohort content
 	$emailCheck = $_POST['email'];
-	$cohortCheck = $_POST['cohort_id'];
-
+	$cohortCheck = $_POST['cohort_name'];
 	$sqlDup = "SELECT * FROM applications INNER JOIN identity ON applications.identity_id = identity.identity_id 
 		WHERE identity.email = '$emailCheck' AND applications.cohort_name = '$cohortCheck'";
-		//!!warning var cohort_id CONTAINS cohort_name
 
 	$dup = mysqli_query($appCon, $sqlDup);  //runs sql code and gets possible duplicates
-	$dupContent = mysqli_fetch_array($dup);
 
+	$dupContent = mysqli_fetch_array($dup);
 	$dupCount = mysqli_num_rows($dup);  //counts total duplicate values
 
 	//checks for duplicates, if greater than 1, throw dup record and stop else write to DB
 	if($dupCount >1){
-		echo "Someone has enrolled in: " . $_POST['cohort_id'] . " with the provided email address already, thank you for your interest.";
+		echo "Someone has enrolled in: " . $_POST['cohort_name'] . " with the provided email address already, thank you for your interest.";
 	}else{
 
 	 	$reqArray = mysqli_query($formCon, "SELECT field_name, is_required FROM fields");
@@ -94,13 +92,20 @@
 				        	//file submission as no submitted value sent via normal ways
 				        	//if object name is resume or cover letter write file path to DB
 				        	if($colName=="resume" || $colName=="cover_letter"){
+				        		if($sqlFirst==0){
+
+				        		}
+				        			if($submitSql!=""){
+				        				$submitSql = $submitSql." , ";
+				        			}
+
 				        		//updates into
-				        		if($fileLoc!=""){
+				        		if($fileLoc==""){
 				        			$old = $colName . "_old";
-				        			$submitSql = $submitSql . $colName . "='" . $_POST['$old'] . "',";
+				        			$submitSql = $submitSql . $colName . "='" . $_POST[$old] . "'";
 				        		}
 				        		else{
-				        			$submitSql = $submitSql . $colName . "='" . $fileLoc . "',";
+				        			$submitSql = $submitSql . $colName . "='" . $fileLoc . "'";
 				        		}
 				        			
 				        	}else
@@ -112,11 +117,10 @@
 				        			$sqlFirst = $sqlFirst + 1;
 				        		}else{
 				        			//updates into
-				        			if($submitSql=="")
-				        			{
+				        			if($submitSql!=""){
+				        				$submitSql = $submitSql." , ";
+				        			}
 				        				$submitSql = $submitSql.$colName . "='" . $_POST[$colName] . "'";
-				        			}else{
-				        				$submitSql = $submitSql . ", " . $colName . "='" . $_POST[$colName] . "'";}
 				        		//increment tracker so system knows to format with commas
 				        		$sqlFirst=$sqlFirst +1;
 				        		}
